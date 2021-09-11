@@ -208,7 +208,7 @@ class PostsViewsTests(TestCase):
 
     def test_index_page_cash(self):
         index_content = self.get_content_by_reverse('posts:index')
-        _new_post = Post.objects.create(
+        Post.objects.create(
             text='New_text',
             author=PostsViewsTests.user
         )

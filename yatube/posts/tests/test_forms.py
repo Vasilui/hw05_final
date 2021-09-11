@@ -18,7 +18,7 @@ def comment_post(client, author):
     )
     count_comments = new_post.comments.count()
     form_data = {'text': 'new_comments'}
-    _response = client.post(
+    client.post(
         reverse('posts:add_comment', kwargs={'post_id': new_post.pk}),
         data=form_data,
         follow=True
@@ -154,7 +154,7 @@ class PostFormTests(TestCase):
             'image': uploaded,
         }
         post_count = Post.objects.count()
-        _response = self.authorized_client.post(
+        self.authorized_client.post(
             reverse('posts:post_create'),
             data=form_data,
             follow=True
@@ -171,7 +171,7 @@ class PostFormTests(TestCase):
         auth_client = Client()
         auth_client.force_login(auth_user)
         old_count, count = comment_post(auth_client, auth_user.username)
-        self.assertEqual(count, old_count+1)
+        self.assertEqual(count, old_count + 1)
 
     def test_post_comment_by_no_auth_user(self):
         old_count, count = comment_post(self.client, self.user.username)
@@ -185,7 +185,7 @@ class PostFormTests(TestCase):
         form_data = {
             'text': 'new_comments',
         }
-        _response = self.authorized_client.post(
+        self.authorized_client.post(
             reverse('posts:add_comment', kwargs={'post_id': new_post.pk}),
             data=form_data,
             follow=True
