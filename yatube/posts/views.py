@@ -3,14 +3,19 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import PostForm, CommentForm
-from .models import Group, Post, User, Follow
+from .forms import CommentForm, PostForm
+from .models import Follow, Group, Post, User
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('group').all()
     page_obj = get_paginator_page_obj(request, posts)
-    return render(request, 'posts/index.html', {'page_obj': page_obj})
+    context = {
+        'page_obj': page_obj,
+        'follow': False,
+        'index': True,
+    }
+    return render(request, 'posts/index.html', context)
 
 
 def group_posts(request, slug):
@@ -103,11 +108,14 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     user = get_object_or_404(User, username=request.user)
-    follower = user.follower.all().values('author')
-    posts_follower = Post.objects.filter(author__in=follower).order_by(
-        '-pub_date')
+    posts_follower = Post.objects.filter(author__following__user=user)
     page_obj = get_paginator_page_obj(request, posts_follower)
-    return render(request, 'posts/follow.html', {'page_obj': page_obj})
+    context = {
+        'page_obj': page_obj,
+        'follow': True,
+        'index': False,
+    }
+    return render(request, 'posts/follow.html', context)
 
 
 @login_required
