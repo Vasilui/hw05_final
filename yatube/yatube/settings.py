@@ -1,17 +1,17 @@
 import os
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '5e&(rum1a$#lwm1t3twcpmlsn^7x%i&xnobq42n)z^fc@0k20k'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '[::1]',
-    'testserver',
-]
+ALLOWED_HOSTS = ['localhost', '51.250.25.249', 
+	'vasiliy.cohort3plus.ru', 'www.vasiliy.cohort3plus.ru']
 
 INSTALLED_APPS = [
     'about.apps.AboutConfig',
@@ -60,10 +60,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'yatube.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db(),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -96,7 +93,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),
                     os.path.join(BASE_DIR, 'yatube/media')]
 
